@@ -3,8 +3,6 @@ package command
 import (
 	"context"
 	"errors"
-	"strconv"
-	"strings"
 
 	"github.com/properfilter/src/model"
 )
@@ -29,6 +27,32 @@ type (
 	}
 )
 
+var (
+	params = map[string]func([]string, int, Filters) (Filters, error){
+		"--price": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewPrice, f)
+		},
+		"--square-footage": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewSquareFootage, f)
+		},
+		"--rooms": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewRooms, f)
+		},
+		"--bathrooms": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewBathrooms, f)
+		},
+		"--name": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewName, f)
+		},
+		"--descrition": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewDescription, f)
+		},
+		"--ammenities": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewAmmenities, f)
+		},
+	}
+)
+
 func Parse(args []string) (*Command, error) {
 	if len(args) == 0 {
 		return nil, errors.New("no arguments provided")
@@ -36,42 +60,14 @@ func Parse(args []string) (*Command, error) {
 
 	filters := make(Filters, 0)
 	for i := 0; i < len(args); i++ {
-		switch args[i] {
-		case "--price":
-			if i+1 < len(args) {
-				price := NewPrice(args[i+1])
-
-				f, err := price.GetFilter()
-				if err != nil {
-					return nil, err
-				}
-
-				filters = append(filters, f)
-			}
-		case "--square-footage":
-			if i+1 < len(args) {
-				squareFootage := NewSquareFootage(args[i+1])
-				f, err := squareFootage.GetFilter()
-				if err != nil {
-					return nil, err
-				}
-
-				filters = append(filters, f)
-			}
-		case "--rooms":
-			if i+1 < len(args) {
-				rooms := NewRooms(args[i+1])
-				f, err := rooms.GetFilter()
-				if err != nil {
-					return nil, err
-				}
-
-				filters = append(filters, f)
-			}
-		case "--name":
-			if i+1 < len(args) {
-				filters = append(filters, NewFilter(Contains(args[i+1])))
-			}
+		p, ok := params[args[i]]
+		if !ok {
+			continue
+		}
+		var err error
+		filters, err = p(args, i, filters)
+		if err != nil {
+			return nil, err
 		}
 	}
 
@@ -90,6 +86,15 @@ func (c *Command) Execute(ctx context.Context, ps model.Properties) model.Proper
 	return ps
 }
 
+func (a *Arguments) GetFilter() (Filter, error) {
+	operation, ok := a.evals[a.operator]
+	if !ok {
+		return nil, errors.New("operator not supported")
+	}
+
+	return NewFilter(operation), nil
+}
+
 func NewFilter(eval func(model.Property) bool) Filter {
 	return func(ps model.Properties) model.Properties {
 		result := make(model.Properties, 0)
@@ -101,69 +106,6 @@ func NewFilter(eval func(model.Property) bool) Filter {
 
 		return result
 	}
-}
-
-func NewPrice(args string) *Arguments {
-	ops := strings.Split(args, ":")
-	price, err := strconv.ParseFloat(ops[1], 32)
-	if err != nil {
-		return nil
-	}
-
-	evals := make(map[string]func(model.Property) bool)
-	evals[equal] = FloatValue(price, EqualPrice)
-	evals[lessThan] = FloatValue(price, LessThanPrice)
-	evals[greaterThan] = FloatValue(price, GreaterThanPrice)
-
-	return &Arguments{
-		evals:    evals,
-		operator: ops[0],
-	}
-}
-
-func NewSquareFootage(args string) *Arguments {
-	ops := strings.Split(args, ":")
-	size, err := strconv.ParseInt(ops[1], 10, 32)
-	if err != nil {
-		return nil
-	}
-
-	evals := make(map[string]func(model.Property) bool)
-	evals[equal] = IntValue(size, EqualFootage)
-	evals[lessThan] = IntValue(size, LessThanFootage)
-	evals[greaterThan] = IntValue(size, GreaterThanFootage)
-
-	return &Arguments{
-		evals:    evals,
-		operator: ops[0],
-	}
-}
-
-func NewRooms(args string) *Arguments {
-	ops := strings.Split(args, ":")
-	size, err := strconv.ParseInt(ops[1], 10, 32)
-	if err != nil {
-		return nil
-	}
-
-	evals := make(map[string]func(model.Property) bool)
-	evals[equal] = IntValue(size, EqualRoom)
-	evals[lessThan] = IntValue(size, LessThanRoom)
-	evals[greaterThan] = IntValue(size, GreaterThanRoom)
-
-	return &Arguments{
-		evals:    evals,
-		operator: ops[0],
-	}
-}
-
-func (a *Arguments) GetFilter() (Filter, error) {
-	operation, ok := a.evals[a.operator]
-	if !ok {
-		return nil, errors.New("operator not supported")
-	}
-
-	return NewFilter(operation), nil
 }
 
 func IntValue(v interface{}, predicate func(model.Property, int64) bool) func(model.Property) bool {
@@ -186,4 +128,30 @@ func FloatValue(v interface{}, predicate func(model.Property, float64) bool) fun
 
 		return predicate(p, price)
 	}
+}
+
+func StringValue(v interface{}, predicate func(model.Property, string) bool) func(model.Property) bool {
+	return func(p model.Property) bool {
+		a, ok := v.(string)
+		if !ok {
+			return false
+		}
+
+		return predicate(p, a)
+	}
+}
+
+func parseParam(args []string, i int, constructor func(string) *Arguments, filters Filters) (Filters, error) {
+	if i+1 < len(args) {
+		price := constructor(args[i+1])
+
+		f, err := price.GetFilter()
+		if err != nil {
+			return nil, err
+		}
+
+		filters = append(filters, f)
+	}
+
+	return filters, nil
 }

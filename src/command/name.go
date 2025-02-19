@@ -6,8 +6,15 @@ import (
 	"github.com/properfilter/src/model"
 )
 
-func Contains(n string) func(model.Property) bool {
-	return func(p model.Property) bool {
-		return strings.Contains(n, p.Name)
+func NewName(args string) *Arguments {
+	evals := make(map[string]func(model.Property) bool)
+	evals[""] = func(p model.Property) bool { return Contains(p, args) }
+
+	return &Arguments{
+		evals:    evals,
+		operator: "",
 	}
+}
+func Contains(p model.Property, name string) bool {
+	return strings.Contains(p.Name, name)
 }
