@@ -144,3 +144,52 @@ func TestSquareFootageEqualsTo(t *testing.T) {
 	assert.Len(t, result, 1)
 	assert.Equal(t, properties[0].SquareFootage, result[0].SquareFootage)
 }
+
+func TestRooms(t *testing.T) {
+	properties := model.Properties{
+		{Name: "6217 S Greenwood Ave", Price: 100, SquareFootage: 80, Rooms: 2},
+		{Name: "6201-03 S King", Price: 200, SquareFootage: 90, Rooms: 3},
+		{Name: "3001-19 E 79th - 3001-19 E 79th St Chicago", Price: 300, SquareFootage: 100, Rooms: 4},
+	}
+
+	uc := []struct {
+		name     string
+		args     []string
+		expected []model.Property
+	}{
+		{
+			name:     "rooms equals to",
+			args:     []string{"--rooms", "eq:3"},
+			expected: []model.Property{properties[1]},
+		},
+		{
+			name:     "rooms less than",
+			args:     []string{"--rooms", "lt:4"},
+			expected: []model.Property{properties[0], properties[1]},
+		},
+		{
+			name:     "rooms greater than",
+			args:     []string{"--rooms", "gt:3"},
+			expected: []model.Property{properties[2]},
+		},
+	}
+
+	for _, tc := range uc {
+		t.Run(tc.name, func(t *testing.T) {
+			cmd, err := command.Parse(tc.args)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			assert.NotNil(t, cmd)
+
+			result := cmd.Execute(context.Background(), properties)
+
+			assert.Len(t, result, len(tc.expected))
+			for _, property := range result {
+				assert.Contains(t, result, property)
+			}
+		})
+	}
+
+}
