@@ -47,6 +47,9 @@ var (
 		"--descrition": func(args []string, index int, f Filters) (Filters, error) {
 			return parseParam(args, index, NewDescription, f)
 		},
+		"--lighting": func(args []string, index int, f Filters) (Filters, error) {
+			return parseParam(args, index, NewLighting, f)
+		},
 		"--ammenities": func(args []string, index int, f Filters) (Filters, error) {
 			return parseParam(args, index, NewAmmenities, f)
 		},

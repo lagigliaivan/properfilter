@@ -34,6 +34,7 @@ var dataSet = model.Properties{
 		Bathrooms:     1,
 		Description:   "foo",
 		Ammenities:    []string{"garage"},
+		Lighting:      "low",
 	},
 	{
 		Name:          "6201-03 S King",
@@ -42,6 +43,7 @@ var dataSet = model.Properties{
 		Rooms:         3,
 		Bathrooms:     2,
 		Description:   "bar",
+		Lighting:      "medium",
 		Ammenities:    []string{"swimmingpool"},
 	},
 	{
@@ -51,6 +53,7 @@ var dataSet = model.Properties{
 		Rooms:         4,
 		Bathrooms:     3,
 		Description:   "baz",
+		Lighting:      "high",
 		Ammenities:    []string{"swimmingpool", "garage"},
 	},
 }
@@ -177,6 +180,33 @@ func TestBathRooms(t *testing.T) {
 		{
 			name:     "Bathrooms greater than",
 			args:     []string{"--bathrooms", "gt:2"},
+			expected: []model.Property{dataSet[2]},
+		},
+	}
+
+	run(t, uc)
+}
+
+func TestLighting(t *testing.T) {
+	//'low' | 'medium' | 'high',
+	uc := []struct {
+		name     string
+		args     []string
+		expected []model.Property
+	}{
+		{
+			name:     "lighting equals to",
+			args:     []string{"--lighting", "eq:low"},
+			expected: []model.Property{dataSet[0]},
+		},
+		{
+			name:     "lighting less than",
+			args:     []string{"--lighting", "lt:high"},
+			expected: []model.Property{dataSet[0], dataSet[1]},
+		},
+		{
+			name:     "lighting greater than",
+			args:     []string{"--lighting", "gt:medium"},
 			expected: []model.Property{dataSet[2]},
 		},
 	}
