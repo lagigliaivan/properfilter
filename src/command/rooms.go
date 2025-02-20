@@ -1,31 +1,40 @@
 package command
 
 import (
+	"errors"
 	"strconv"
 	"strings"
 
 	"github.com/properfilter/src/model"
 )
 
-func NewRooms(args string) *Arguments {
+var (
+	ErrInvalidNumberOfArguments = errors.New("invalid number of arguments")
+	ErrInvalidOperator          = errors.New("invalid operator")
+	ErrorNoOperator             = errors.New("no operator provided")
+)
+
+func NewRooms(args string) (PropertyFilter, error) {
 	ops := strings.Split(args, ":")
-	operand := ops[1]
-	operator := ops[0]
+	if len(ops) != 2 {
+		return nil, ErrInvalidNumberOfArguments
+	}
 
-	size, err := strconv.ParseInt(operand, 10, 32)
+	size, err := strconv.ParseInt(ops[1], 10, 32)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
-	evals := make(map[string]func(model.Property) bool)
-	evals[equal] = IntValue(size, EqualRoom)
-	evals[lessThan] = IntValue(size, LessThanRoom)
-	evals[greaterThan] = IntValue(size, GreaterThanRoom)
-
-	return &Arguments{
-		evals:    evals,
-		operator: operator,
+	switch ops[0] {
+	case equal:
+		return IntValue(size, EqualRoom), nil
+	case lessThan:
+		return IntValue(size, LessThanRoom), nil
+	case greaterThan:
+		return IntValue(size, GreaterThanRoom), nil
 	}
+
+	return nil, ErrInvalidOperator
 }
 func EqualRoom(p model.Property, v int64) bool {
 	return int64(p.Rooms) == v

@@ -6,14 +6,8 @@ import (
 	"github.com/properfilter/src/model"
 )
 
-func NewDescription(args string) *Arguments {
-	evals := make(map[string]func(model.Property) bool)
-	evals[""] = func(p model.Property) bool { return ContainsDescription(p, args) }
-
-	return &Arguments{
-		evals:    evals,
-		operator: "",
-	}
+func NewDescription(args string) (PropertyFilter, error) {
+	return func(p model.Property) bool { return ContainsDescription(p, args) }, nil
 }
 
 func ContainsDescription(p model.Property, name string) bool {

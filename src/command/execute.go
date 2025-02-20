@@ -21,37 +21,35 @@ type (
 	Filter  func(model.Properties) model.Properties
 	Filters []Filter
 
-	Arguments struct {
-		evals    map[string]func(model.Property) bool
-		operator string
-	}
+	PropertyFilter            func(model.Property) bool
+	PropertyFilterConstructor func(string) (PropertyFilter, error)
 )
 
 var (
-	params = map[string]func([]string, int, Filters) (Filters, error){
-		"--price": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewPrice, f)
+	params = map[string]func(string, Filters) (Filters, error){
+		"--price": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewPrice, f)
 		},
-		"--square-footage": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewSquareFootage, f)
+		"--square-footage": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewSquareFootage, f)
 		},
-		"--rooms": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewRooms, f)
+		"--rooms": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewRooms, f)
 		},
-		"--bathrooms": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewBathrooms, f)
+		"--bathrooms": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewBathrooms, f)
 		},
-		"--name": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewName, f)
+		"--name": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewName, f)
 		},
-		"--descrition": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewDescription, f)
+		"--descrition": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewDescription, f)
 		},
-		"--lighting": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewLighting, f)
+		"--lighting": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewLighting, f)
 		},
-		"--ammenities": func(args []string, index int, f Filters) (Filters, error) {
-			return parseParam(args, index, NewAmmenities, f)
+		"--ammenities": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewAmmenities, f)
 		},
 	}
 )
@@ -68,7 +66,12 @@ func Parse(args []string) (*Command, error) {
 			continue
 		}
 		var err error
-		filters, err = p(args, i, filters)
+
+		if i+1 >= len(args) {
+			return nil, ErrorNoOperator
+		}
+
+		filters, err = p(args[i+1], filters)
 		if err != nil {
 			return nil, err
 		}
@@ -87,15 +90,6 @@ func (c *Command) Execute(ctx context.Context, ps model.Properties) model.Proper
 	}
 
 	return ps
-}
-
-func (a *Arguments) GetFilter() (Filter, error) {
-	operation, ok := a.evals[a.operator]
-	if !ok {
-		return nil, errors.New("operator not supported")
-	}
-
-	return NewFilter(operation), nil
 }
 
 func NewFilter(eval func(model.Property) bool) Filter {
@@ -144,17 +138,11 @@ func StringValue(v interface{}, predicate func(model.Property, string) bool) fun
 	}
 }
 
-func parseParam(args []string, i int, constructor func(string) *Arguments, filters Filters) (Filters, error) {
-	if i+1 < len(args) {
-		price := constructor(args[i+1])
-
-		f, err := price.GetFilter()
-		if err != nil {
-			return nil, err
-		}
-
-		filters = append(filters, f)
+func parseParam(args string, constructor PropertyFilterConstructor, filters Filters) (Filters, error) {
+	c, error := constructor(args)
+	if error != nil {
+		return nil, error
 	}
 
-	return filters, nil
+	return append(filters, NewFilter(c)), nil
 }

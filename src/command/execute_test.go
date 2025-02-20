@@ -2,6 +2,7 @@ package command_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/properfilter/src/command"
@@ -294,6 +295,26 @@ func TestPriceEqualsToAndNameEqualsTo(t *testing.T) {
 	assert.Len(t, result, 0)
 }
 
+func TestErrorsInParams(t *testing.T) {
+	uc := []struct {
+		name string
+		args []string
+		err  error
+	}{
+		{
+			name: "using a token separator different from :",
+			args: []string{"--ammenities", "eq=garage"},
+			err:  command.ErrInvalidNumberOfArguments,
+		},
+		{
+			name: "missing parameter operator",
+			args: []string{"--ammenities"},
+			err:  command.ErrorNoOperator,
+		},
+	}
+
+	runOnError(t, uc)
+}
 func run(t *testing.T, uc []struct {
 	name     string
 	args     []string
@@ -314,6 +335,24 @@ func run(t *testing.T, uc []struct {
 			for _, property := range result {
 				assert.Contains(t, result, property)
 			}
+		})
+	}
+}
+
+func runOnError(t *testing.T, uc []struct {
+	name string
+	args []string
+	err  error
+}) {
+	for _, tc := range uc {
+		t.Run(tc.name, func(t *testing.T) {
+			_, err := command.Parse(tc.args)
+			if err != nil {
+				assert.True(t, errors.Is(err, tc.err))
+				return
+			}
+
+			t.Fatal("error expected")
 		})
 	}
 }

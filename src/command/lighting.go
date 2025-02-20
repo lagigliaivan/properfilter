@@ -6,19 +6,24 @@ import (
 	"github.com/properfilter/src/model"
 )
 
-func NewLighting(args string) *Arguments {
+func NewLighting(args string) (PropertyFilter, error) {
 	ops := strings.Split(args, ":")
+	if len(ops) != 2 {
+		return nil, ErrInvalidNumberOfArguments
+	}
+
 	lighting := ops[1]
 
-	evals := make(map[string]func(model.Property) bool)
-	evals[equal] = StringValue(lighting, EqualLighting)
-	evals[lessThan] = StringValue(lighting, LessThanLighting)
-	evals[greaterThan] = StringValue(lighting, GreaterThanLighting)
-
-	return &Arguments{
-		evals:    evals,
-		operator: ops[0],
+	switch ops[0] {
+	case equal:
+		return StringValue(lighting, EqualLighting), nil
+	case lessThan:
+		return StringValue(lighting, LessThanLighting), nil
+	case greaterThan:
+		return StringValue(lighting, GreaterThanLighting), nil
 	}
+
+	return nil, ErrInvalidOperator
 }
 func EqualLighting(p model.Property, v string) bool {
 	return p.Lighting == v

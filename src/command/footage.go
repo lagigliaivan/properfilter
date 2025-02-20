@@ -7,22 +7,27 @@ import (
 	"github.com/properfilter/src/model"
 )
 
-func NewSquareFootage(args string) *Arguments {
+func NewSquareFootage(args string) (PropertyFilter, error) {
 	ops := strings.Split(args, ":")
+	if len(ops) != 2 {
+		return nil, ErrInvalidNumberOfArguments
+	}
+
 	size, err := strconv.ParseInt(ops[1], 10, 32)
 	if err != nil {
-		return nil
+		return nil, ErrInvalidOperator
 	}
 
-	evals := make(map[string]func(model.Property) bool)
-	evals[equal] = IntValue(size, EqualFootage)
-	evals[lessThan] = IntValue(size, LessThanFootage)
-	evals[greaterThan] = IntValue(size, GreaterThanFootage)
-
-	return &Arguments{
-		evals:    evals,
-		operator: ops[0],
+	switch ops[0] {
+	case equal:
+		return IntValue(size, EqualFootage), nil
+	case lessThan:
+		return IntValue(size, LessThanFootage), nil
+	case greaterThan:
+		return IntValue(size, GreaterThanFootage), nil
 	}
+
+	return nil, ErrInvalidOperator
 }
 
 func EqualFootage(p model.Property, v int64) bool {

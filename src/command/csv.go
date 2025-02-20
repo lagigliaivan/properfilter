@@ -8,8 +8,6 @@ import (
 	"github.com/properfilter/src/model"
 )
 
-//"6217 S Greenwood Ave, 10000.30,80,2,1,foo,garage/grill/swimmingpool,low"
-
 func CsvToProperty(csvLine string) (*model.Property, error) {
 	sp := strings.Split(csvLine, ",")
 	if len(sp) != 8 {
