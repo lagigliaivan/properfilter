@@ -1,6 +1,7 @@
 package command
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -11,6 +12,9 @@ import (
 
 func CsvToProperty(csvLine string) (*model.Property, error) {
 	sp := strings.Split(csvLine, ",")
+	if len(sp) != 8 {
+		return nil, fmt.Errorf("invalid CSV line:%s", csvLine)
+	}
 
 	price, err := strconv.ParseFloat(sp[1], 32)
 	if err != nil {

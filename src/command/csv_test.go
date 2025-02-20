@@ -24,3 +24,11 @@ func TestCsvToProperties(t *testing.T) {
 	assert.Equal(t, []string{"garage", "grill", "swimmingpool"}, property.Ammenities)
 	assert.Equal(t, "low", property.Lighting)
 }
+
+func TestCsvToPropertiesReturnsErrorWhenMissingField(t *testing.T) {
+	csvLine := "6217 S Greenwood Ave,10000.30,80,2,1,foo,garage/grill/swimmingpool"
+
+	property, err := command.CsvToProperty(csvLine)
+	assert.Error(t, err)
+	assert.Nil(t, property)
+}
