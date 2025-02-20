@@ -12,14 +12,14 @@ import (
 )
 
 func main() {
-	args := os.Args[1:]
+	args := os.Args[1:] //removing the first argument which is the program name
 
 	if len(args) == 0 {
 		fmt.Print("Usage: properfilter [command] [arguments]\n")
 		return
 	}
 
-	cmd, err := command.Parse(args)
+	cmd, err := command.NewCommand(args)
 	if err != nil {
 		log.Printf("Error: %s\n", err)
 		return

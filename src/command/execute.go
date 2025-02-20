@@ -54,14 +54,14 @@ var (
 	}
 )
 
-func Parse(args []string) (*Command, error) {
+func NewCommand(args []string) (*Command, error) {
 	if len(args) == 0 {
 		return nil, errors.New("no arguments provided")
 	}
 
 	filters := make(Filters, 0)
-	for i := 0; i < len(args); i++ {
-		p, ok := params[args[i]]
+	for i := 0; i < len(args); i = i + 2 {
+		param, ok := params[args[i]]
 		if !ok {
 			continue
 		}
@@ -71,7 +71,7 @@ func Parse(args []string) (*Command, error) {
 			return nil, ErrorNoOperator
 		}
 
-		filters, err = p(args[i+1], filters)
+		filters, err = param(args[i+1], filters)
 		if err != nil {
 			return nil, err
 		}

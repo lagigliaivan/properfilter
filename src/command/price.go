@@ -3,15 +3,14 @@ package command
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	"github.com/properfilter/src/model"
 )
 
 func NewPrice(args string) (PropertyFilter, error) {
-	ops := strings.Split(args, ":")
-	if len(ops) != 2 {
-		return nil, fmt.Errorf("invalid number of arguments %s", args)
+	ops, err := ParseOperator(args)
+	if err != nil {
+		return nil, err
 	}
 
 	price, err := strconv.ParseFloat(ops[1], 32)

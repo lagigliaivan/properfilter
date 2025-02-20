@@ -268,7 +268,7 @@ func TestAmmenities(t *testing.T) {
 }
 func TestPriceEqualsToAndNameEqualsTo(t *testing.T) {
 	args := []string{"--price", "eq:100", "--name", "foo"}
-	cmd, err := command.Parse(args)
+	cmd, err := command.NewCommand(args)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -322,7 +322,7 @@ func run(t *testing.T, uc []struct {
 }) {
 	for _, tc := range uc {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd, err := command.Parse(tc.args)
+			cmd, err := command.NewCommand(tc.args)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -346,7 +346,7 @@ func runOnError(t *testing.T, uc []struct {
 }) {
 	for _, tc := range uc {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := command.Parse(tc.args)
+			_, err := command.NewCommand(tc.args)
 			if err != nil {
 				assert.True(t, errors.Is(err, tc.err))
 				return

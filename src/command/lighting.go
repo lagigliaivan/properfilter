@@ -1,15 +1,13 @@
 package command
 
 import (
-	"strings"
-
 	"github.com/properfilter/src/model"
 )
 
 func NewLighting(args string) (PropertyFilter, error) {
-	ops := strings.Split(args, ":")
-	if len(ops) != 2 {
-		return nil, ErrInvalidNumberOfArguments
+	ops, err := ParseOperator(args)
+	if err != nil {
+		return nil, err
 	}
 
 	lighting := ops[1]
