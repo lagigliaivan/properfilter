@@ -27,7 +27,7 @@ type (
 )
 
 func (p *Property) String() string {
-	return fmt.Sprintf("%s,%f,%d,%d,%s", p.Name, p.Price, p.Bathrooms, p.Bathrooms, p.Ammenities)
+	return fmt.Sprintf("%s,%f,%d,%d,%s,%s,%s", p.Name, p.Price, p.Bathrooms, p.Bathrooms, p.Ammenities, p.Lighting, p.Location.String())
 }
 
 func NewCoordinatesFromString(lat string, long string) (*Coordinates, error) {
@@ -42,4 +42,8 @@ func NewCoordinatesFromString(lat string, long string) (*Coordinates, error) {
 	}
 
 	return &Coordinates{Lat: float32(lt), Long: float32(lg)}, nil
+}
+
+func (c *Coordinates) String() string {
+	return fmt.Sprintf("%f,%f", c.Lat, c.Long)
 }

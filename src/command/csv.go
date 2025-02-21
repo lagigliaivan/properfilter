@@ -10,7 +10,7 @@ import (
 
 func CsvToProperty(csvLine string) (*model.Property, error) {
 	sp := strings.Split(csvLine, ",")
-	if len(sp) != 8 {
+	if len(sp) != 10 {
 		return nil, fmt.Errorf("invalid CSV line:%s", csvLine)
 	}
 
@@ -33,6 +33,12 @@ func CsvToProperty(csvLine string) (*model.Property, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	c, err := model.NewCoordinatesFromString(sp[8], sp[9])
+	if err != nil {
+		return nil, err
+	}
+
 	return &model.Property{
 		Name:          sp[0],
 		Price:         float32(price),
@@ -42,5 +48,6 @@ func CsvToProperty(csvLine string) (*model.Property, error) {
 		Description:   sp[5],
 		Ammenities:    strings.Split(sp[6], "/"),
 		Lighting:      sp[7],
+		Location:      *c,
 	}, nil
 }

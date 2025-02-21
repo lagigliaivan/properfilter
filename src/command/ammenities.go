@@ -16,10 +16,10 @@ func NewAmmenities(args string) (PropertyFilter, error) {
 		return nil, ErrInvalidOperator
 	}
 
-	return StringValue(ammenities, EqualAmmenities), nil
+	return StringValue(ammenities, equalAmmenities), nil
 }
 
-func EqualAmmenities(p model.Property, v string) bool {
+func equalAmmenities(p model.Property, v string) bool {
 	for _, a := range p.Ammenities {
 		if a == v {
 			return true
