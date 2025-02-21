@@ -36,6 +36,7 @@ var dataSet = model.Properties{
 		Description:   "foo",
 		Ammenities:    []string{"garage"},
 		Lighting:      "low",
+		Location:      model.Coordinates{Lat: float32(-33.20), Long: float32(-63.430154)},
 	},
 	{
 		Name:          "6201-03 S King",
@@ -46,6 +47,7 @@ var dataSet = model.Properties{
 		Description:   "bar",
 		Lighting:      "medium",
 		Ammenities:    []string{"swimmingpool"},
+		Location:      model.Coordinates{Lat: float32(-33.013270), Long: float32(-63.45)},
 	},
 	{
 		Name:          "3001-19 E 79th - 3001-19 E 79",
@@ -56,6 +58,7 @@ var dataSet = model.Properties{
 		Description:   "baz",
 		Lighting:      "high",
 		Ammenities:    []string{"swimmingpool", "garage"},
+		Location:      model.Coordinates{Lat: float32(-33.05), Long: float32(-63.430154)},
 	},
 }
 
@@ -266,35 +269,23 @@ func TestAmmenities(t *testing.T) {
 
 	run(t, uc)
 }
-func TestPriceEqualsToAndNameEqualsTo(t *testing.T) {
-	args := []string{"--price", "eq:100", "--name", "foo"}
-	cmd, err := command.NewCommand(args)
-	if err != nil {
-		t.Fatal(err)
+
+func TestMixingOperators(t *testing.T) {
+	uc := []struct {
+		name     string
+		args     []string
+		expected []model.Property
+	}{
+		{
+			name: "ammenities must include",
+			args: []string{"--ammenities", "eq:garage", "--price", "gt:100", "--rooms", "lt:5"},
+
+			expected: []model.Property{dataSet[2]},
+		},
 	}
 
-	assert.NotNil(t, cmd)
-
-	properties := model.Properties{
-		{Name: "foo", Price: 100},
-		{Name: "y", Price: 200},
-		{Name: "z", Price: 300},
-	}
-
-	result := cmd.Execute(context.Background(), properties)
-
-	assert.Len(t, result, 1)
-	assert.Equal(t, properties[0].Name, result[0].Name)
-
-	properties = model.Properties{
-		{Name: "y", Price: 100},
-		{Name: "z", Price: 300},
-	}
-
-	result = cmd.Execute(context.Background(), properties)
-	assert.Len(t, result, 0)
+	run(t, uc)
 }
-
 func TestErrorsInParams(t *testing.T) {
 	uc := []struct {
 		name string
@@ -315,6 +306,30 @@ func TestErrorsInParams(t *testing.T) {
 
 	runOnError(t, uc)
 }
+
+func TestDistance(t *testing.T) {
+	uc := []struct {
+		name     string
+		args     []string
+		expected []model.Property
+	}{
+		{
+			name: "less than 5km away from the reference point",
+			args: []string{"--distance", "lt:5,-33.013270,-63.430154"},
+
+			expected: []model.Property{dataSet[1], dataSet[2]},
+		},
+		{
+			name: "more than 5km away from the reference point",
+			args: []string{"--distance", "gt:5,-33.013270,-63.430154"},
+
+			expected: []model.Property{dataSet[0]},
+		},
+	}
+
+	run(t, uc)
+}
+
 func run(t *testing.T, uc []struct {
 	name     string
 	args     []string
@@ -322,14 +337,20 @@ func run(t *testing.T, uc []struct {
 }) {
 	for _, tc := range uc {
 		t.Run(tc.name, func(t *testing.T) {
-			cmd, err := command.NewCommand(tc.args)
+			cmd, err := command.New(tc.args)
 			if err != nil {
 				t.Fatal(err)
 			}
 
 			assert.NotNil(t, cmd)
 
-			result := cmd.Execute(context.Background(), dataSet)
+			result := make(model.Properties, 0)
+			for _, property := range dataSet {
+				p := cmd.Filter(context.Background(), property)
+				if p != nil {
+					result = append(result, *p)
+				}
+			}
 
 			assert.Len(t, result, len(tc.expected))
 			for _, property := range result {
@@ -346,7 +367,7 @@ func runOnError(t *testing.T, uc []struct {
 }) {
 	for _, tc := range uc {
 		t.Run(tc.name, func(t *testing.T) {
-			_, err := command.NewCommand(tc.args)
+			_, err := command.New(tc.args)
 			if err != nil {
 				assert.True(t, errors.Is(err, tc.err))
 				return

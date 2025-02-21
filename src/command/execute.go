@@ -18,8 +18,7 @@ type (
 		filters Filters
 	}
 
-	Filter  func(model.Properties) model.Properties
-	Filters []Filter
+	Filters []PropertyFilter
 
 	PropertyFilter            func(model.Property) bool
 	PropertyFilterConstructor func(string) (PropertyFilter, error)
@@ -51,10 +50,13 @@ var (
 		"--ammenities": func(args string, f Filters) (Filters, error) {
 			return parseParam(args, NewAmmenities, f)
 		},
+		"--distance": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewDistance, f)
+		},
 	}
 )
 
-func NewCommand(args []string) (*Command, error) {
+func New(args []string) (*Command, error) {
 	if len(args) == 0 {
 		return nil, errors.New("no arguments provided")
 	}
@@ -84,25 +86,14 @@ func NewCommand(args []string) (*Command, error) {
 	return &Command{filters: filters}, nil
 }
 
-func (c *Command) Execute(ctx context.Context, ps model.Properties) model.Properties {
-	for _, f := range c.filters {
-		ps = f(ps)
-	}
-
-	return ps
-}
-
-func NewFilter(eval func(model.Property) bool) Filter {
-	return func(ps model.Properties) model.Properties {
-		result := make(model.Properties, 0)
-		for _, p := range ps {
-			if eval(p) {
-				result = append(result, p)
-			}
+func (c *Command) Filter(ctx context.Context, prop model.Property) *model.Property {
+	for _, filter := range c.filters {
+		if !filter(prop) {
+			return nil
 		}
-
-		return result
 	}
+
+	return &prop
 }
 
 func IntValue(v interface{}, predicate func(model.Property, int64) bool) func(model.Property) bool {
@@ -144,5 +135,5 @@ func parseParam(args string, constructor PropertyFilterConstructor, filters Filt
 		return nil, error
 	}
 
-	return append(filters, NewFilter(c)), nil
+	return append(filters, c), nil
 }

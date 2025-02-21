@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/properfilter/src/command"
-	"github.com/properfilter/src/model"
 )
 
 func main() {
@@ -19,27 +18,28 @@ func main() {
 		return
 	}
 
-	cmd, err := command.NewCommand(args)
+	cmd, err := command.New(args)
 	if err != nil {
 		log.Printf("Error: %s\n", err)
 		return
 	}
 
-	properties := make(model.Properties, 0)
-	s := bufio.NewScanner(os.Stdin)
-	for s.Scan() {
-		property, err := command.CsvToProperty(s.Text())
+	scanStdin(func(line string) {
+		property, err := command.CsvToProperty(line)
 		if err != nil {
 			log.Printf("Error: %s\n", err)
-			continue
 		}
 
-		properties = append(properties, *property)
-	}
+		p := cmd.Filter(context.Background(), *property)
+		if p != nil {
+			fmt.Println(p.String())
+		}
+	})
+}
 
-	props := cmd.Execute(context.Background(), properties)
-
-	for _, p := range props {
-		fmt.Printf("%s,%f,%d,%d,%s\n", p.Name, p.Price, p.Bathrooms, p.Bathrooms, p.Ammenities)
+func scanStdin(run func(string)) {
+	s := bufio.NewScanner(os.Stdin)
+	for s.Scan() {
+		run(s.Text())
 	}
 }

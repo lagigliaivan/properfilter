@@ -4,7 +4,7 @@ import (
 	"strings"
 )
 
-func ParseOperator(args string) ([]string, error) {
+func ParseArgsValues(args string) ([]string, error) {
 	ops := strings.Split(args, ":")
 	if len(ops) != 2 {
 		return nil, ErrInvalidNumberOfArguments

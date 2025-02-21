@@ -5,7 +5,7 @@ import (
 )
 
 func NewLighting(args string) (PropertyFilter, error) {
-	ops, err := ParseOperator(args)
+	ops, err := ParseArgsValues(args)
 	if err != nil {
 		return nil, err
 	}
