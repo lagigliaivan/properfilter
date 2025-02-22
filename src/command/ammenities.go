@@ -1,30 +1,29 @@
 package command
 
 import (
+	"strings"
+
 	"github.com/properfilter/src/model"
 )
 
 func NewAmmenities(args string) (PropertyFilter, error) {
-	ops, err := ParseArgsValues(args)
-	if err != nil {
-		return nil, err
+	ops := strings.Split(args, ",")
+	if len(ops) == 0 {
+		return nil, ErrInvalidNumberOfArguments
 	}
 
-	ammenities := ops[1]
-
-	if ops[0] != equal {
-		return nil, ErrInvalidOperator
-	}
-
-	return StringValue(ammenities, equalAmmenities), nil
+	return func(p model.Property) bool {
+		return equalAmmenities(p, ops)
+	}, nil
 }
 
-func equalAmmenities(p model.Property, v string) bool {
-	for _, a := range p.Ammenities {
-		if a == v {
-			return true
+func equalAmmenities(p model.Property, ammenities []string) bool {
+	count := 0
+	for _, ammenity := range ammenities {
+		if ContainsElement(ammenity, p.Ammenities) {
+			count++
 		}
 	}
 
-	return false
+	return len(ammenities) == count
 }

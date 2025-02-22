@@ -7,15 +7,16 @@ import (
 
 type (
 	Property struct {
-		Name          string
-		SquareFootage int
-		Lighting      string //'low' | 'medium' | 'high',
-		Price         float32
-		Rooms         int
-		Bathrooms     int
-		Location      Coordinates
-		Description   string
-		Ammenities    []string // Record<string, boolean> //yard, garage, pool, etc
+		StringRepresentation string
+		Name                 string
+		SquareFootage        int
+		Lighting             string //'low' | 'medium' | 'high',
+		Price                float32
+		Rooms                int
+		Bathrooms            int
+		Location             Coordinates
+		Description          string
+		Ammenities           []string // Record<string, boolean> //yard, garage, pool, etc
 	}
 
 	Coordinates struct {
@@ -27,7 +28,7 @@ type (
 )
 
 func (p *Property) String() string {
-	return fmt.Sprintf("%s,%f,%d,%d,%s,%s,%s", p.Name, p.Price, p.Bathrooms, p.Bathrooms, p.Ammenities, p.Lighting, p.Location.String())
+	return fmt.Sprintf(p.StringRepresentation)
 }
 
 func NewCoordinatesFromString(lat string, long string) (*Coordinates, error) {

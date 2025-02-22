@@ -10,22 +10,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-// - Equal, lessThan and greater-than
-// - Inclusion (i.e. must include garage)
-// - Matching (description must include some word)
-// - Distance (for location)
-
-// Name          string
-// SquareFootage int
-// Lighting      string //'low' | 'medium' | 'high',
-// Price         int
-// Rooms         int
-// Bathrooms     int
-// Location      *Coordinates
-// Description   string
-// Ammenities    []string
-
-// args := []string{"--name", "foo", "--price", "eq=100"}
 var dataSet = model.Properties{
 	{
 		Name:          "6217 S Greenwood Ave",
@@ -251,18 +235,18 @@ func TestAmmenities(t *testing.T) {
 	}{
 		{
 			name: "ammenities must include",
-			args: []string{"--ammenities", "eq:garage"},
+			args: []string{"--ammenities", "garage"},
 
 			expected: []model.Property{dataSet[0], dataSet[2]},
 		},
 		{
 			name:     "ammenities must include",
-			args:     []string{"--ammenities", "eq:swimmingpool"},
+			args:     []string{"--ammenities", "swimmingpool"},
 			expected: []model.Property{dataSet[1], dataSet[2]},
 		},
 		{
 			name:     "ammenities must include more than one",
-			args:     []string{"--ammenities", "eq:swimmingpool", "--ammenities", "eq:garage"},
+			args:     []string{"--ammenities", "swimmingpool,garage"},
 			expected: []model.Property{dataSet[2]},
 		},
 	}

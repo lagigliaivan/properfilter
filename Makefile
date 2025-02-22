@@ -2,7 +2,7 @@ test:
 		go test ./...
 testsum:
 		gotestsum ./...
-run:
-	go run ./cmd/main.go --price gt:10000 < dataset.csv
+run: build
+		./properfilter --help
 build:
 		go build -o properfilter ./cmd/main.go
