@@ -120,7 +120,7 @@ func help() {
 
 	fmt.Print("Examples:\n")
 	color.Cyan("#properties where price is in the range of [10000 and 14000]\n")
-	fmt.Print("./properfilter --price gt:9999 --price lt:14001< dataset.csv< dataset.csv\n\n")
+	fmt.Print("./properfilter --price gt:9999 --price lt:14001< dataset.csv\n\n")
 
 	color.Cyan("#properties where price is greater than 10000 and square footage greater than 1000 \n")
 	fmt.Print("./properfilter --price gt:10000 --squarefootage gt:1000 < dataset.csv\n\n")
