@@ -1,16 +1,17 @@
-6217 S Greenwood Ave,12000.50,75,2,1,foo,garage/grill,low,-33.013270,63.430154
-6218 S Greenwood Ave,350000.75,85,3,2,foo,garage/swimmingpool,high,-32.013270,63.10
-6219 S Greenwood Ave,15000.60,78,2,1,foo,grill/swimmingpool,medium,-31.013270,63.10
-6220 S Greenwood Ave,10500.20,70,2,1,foo,garage/grill,high,-33.20,63.02
-10985 W 65th St,215000.30,88,3,2,bar,fireplace/patio,medium,-33.013270,70.2
-10985 W 65th St,355000.90,92,4,3,bar,fireplace/patio/spa,high,-33.013270,72.2
-10985 W 65th St,12500.40,72,2,1,bar,pool/spa,low,-33.013270,-40.10
-4580 E Maple Dr,52000.25,73,3,2,baz,garage/pool,medium,-32.013270,63.10
-4580 E Maple Dr,240000.10,87,4,3,baz,garage,high,-31.013270,63.10
-4580 E Maple Dr,11000.35,68,2,1,baz,grill,low,-31.013270,63.10
-6790 N Pine Ave,160000.80,82,3,2,qux,fireplace/patio,medium,-34.013270,-63.10
-6790 N Pine Ave,310000.50,97,5,4,qux,fireplace/patio/pool,high,-33.013270,-65.10
-6790 N Pine Ave,18000.15,62,1,1,qux,grill,low,-33.013270,-66.02
-3890 S Elm St,85000.60,80,3,2,quux,fireplace,medium,-33.013270,64.03
-3890 S Elm St,270000.20,88,4,3,quux,fireplace/patio,high,-33.013270,73.10
-3890 S Elm St,23000.30,72,2,1,quux,grill,low,-33.013270,53.10
+Address,Price,SquareFootage,Bedrooms,Bathrooms,Description,Amenities,lighting,Latitude,Longitude
+1001 W Elm St,12000.50,75,2,1,Cozy home,garage/grill,medium,-33.513270,62.930154
+1002 W Pine St,350000.75,85,3,2,Modern house,garage/swimmingpool,high,-32.513270,62.600000
+1003 W Birch St,15000.60,78,2,1,Charming residence,grill/swimmingpool,low,-31.513270,62.800000
+1004 W Cedar St,10500.20,70,2,1,Cozy bungalow,garage/grill,medium,-33.500000,62.700000
+2001 E Maple Ave,215000.30,88,3,2,Spacious home,fireplace/patio,medium,-33.913270,70.200000
+2002 E Oak Ave,355000.90,92,4,3,Luxury villa,fireplace/patio/spa,high,-33.913270,71.800000
+2003 E Spruce Ave,12500.40,72,2,1,Small cottage,pool/spa,low,-33.913270,44.500000
+3001 S Walnut Dr,52000.25,73,3,2,Classic house,garage/pool,medium,-32.713270,63.300000
+3002 S Chestnut Dr,240000.10,87,4,3,Modern estate,garage,medium,-31.613270,63.400000
+3003 S Mahogany Dr,11000.35,68,2,1,Tiny home,grill,high,-31.313270,63.500000
+4001 N Ash Ln,160000.80,82,3,2,Rustic retreat,fireplace/patio,low,-34.013270,63.200000
+4002 N Fir Ln,310000.50,97,5,4,Grand mansion,fireplace/patio/pool,medium,-33.213270,65.500000
+4003 N Hickory Ln,18000.15,62,1,1,Compact living,grill,medium,-33.813270,66.200000
+5001 E Redwood Cir,85000.60,80,3,2,Quaint cottage,fireplace,high,-33.313270,64.400000
+5002 E Dogwood Cir,270000.20,88,4,3,Spacious retreat,fireplace/patio,low,-33.513270,73.300000
+5003 E Cypress Cir,23000.30,72,2,1,Charming hideaway,grill,medium,-33.213270,53.600000

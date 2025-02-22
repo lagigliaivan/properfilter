@@ -7,6 +7,15 @@ import (
 )
 
 func NewAmmenities(args string) (PropertyFilter, error) {
+	filter, err := OR(args, NewAmmenities)
+	if err != nil {
+		return nil, err
+	}
+
+	if filter != nil {
+		return filter, nil
+	}
+
 	ops := strings.Split(args, ",")
 	if len(ops) == 0 {
 		return nil, ErrInvalidNumberOfArguments

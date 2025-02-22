@@ -12,7 +12,7 @@ import (
 
 var dataSet = model.Properties{
 	{
-		Name:          "6217 S Greenwood Ave",
+		Address:       "6217 S Greenwood Ave",
 		Price:         100,
 		SquareFootage: 80,
 		Rooms:         2,
@@ -23,7 +23,7 @@ var dataSet = model.Properties{
 		Location:      model.Coordinates{Lat: float32(-33.20), Long: float32(-63.430154)},
 	},
 	{
-		Name:          "6201-03 S King",
+		Address:       "6201-03 S King",
 		Price:         200,
 		SquareFootage: 90,
 		Rooms:         3,
@@ -34,7 +34,7 @@ var dataSet = model.Properties{
 		Location:      model.Coordinates{Lat: float32(-33.013270), Long: float32(-63.45)},
 	},
 	{
-		Name:          "3001-19 E 79th - 3001-19 E 79",
+		Address:       "3001-19 E 79th - 3001-19 E 79",
 		Price:         300,
 		SquareFootage: 100,
 		Rooms:         4,
@@ -46,26 +46,31 @@ var dataSet = model.Properties{
 	},
 }
 
-func TestName(t *testing.T) {
+func TestAddress(t *testing.T) {
 	uc := []struct {
 		name     string
 		args     []string
 		expected []model.Property
 	}{
 		{
-			name:     "name equals to",
-			args:     []string{"--name", "6217 S Greenwood Ave"},
+			name:     "address equals to",
+			args:     []string{"--address", "6217 S Greenwood Ave"},
 			expected: []model.Property{dataSet[0]},
 		},
 		{
-			name:     "name contains",
-			args:     []string{"--name", "S"},
+			name:     "address contains",
+			args:     []string{"--address", "S"},
 			expected: []model.Property{dataSet[0], dataSet[1]},
 		},
 		{
-			name:     "name is not present",
-			args:     []string{"--name", "non existing"},
+			name:     "address is not present",
+			args:     []string{"--address", "non existing"},
 			expected: []model.Property{},
+		},
+		{
+			name:     "address is not present",
+			args:     []string{"--address", "Greenwood|King"},
+			expected: []model.Property{dataSet[0], dataSet[1]},
 		},
 	}
 
@@ -208,19 +213,24 @@ func TestDescription(t *testing.T) {
 		expected []model.Property
 	}{
 		{
-			name:     "name equals to",
-			args:     []string{"--descrition", "foo"},
+			name:     "description equals to",
+			args:     []string{"--description", "foo"},
 			expected: []model.Property{dataSet[0]},
 		},
 		{
-			name:     "name contains",
-			args:     []string{"--descrition", "fo"},
+			name:     "description contains",
+			args:     []string{"--description", "fo"},
 			expected: []model.Property{dataSet[0]},
 		},
 		{
-			name:     "name is not present",
-			args:     []string{"--descrition", "xxx"},
+			name:     "description is not present",
+			args:     []string{"--description", "xxx"},
 			expected: []model.Property{},
+		},
+		{
+			name:     "description is not present",
+			args:     []string{"--description", "foo|bar"},
+			expected: []model.Property{dataSet[0], dataSet[1]},
 		},
 	}
 
@@ -245,9 +255,14 @@ func TestAmmenities(t *testing.T) {
 			expected: []model.Property{dataSet[1], dataSet[2]},
 		},
 		{
-			name:     "ammenities must include more than one",
+			name:     "swimmingpool AND garage",
 			args:     []string{"--ammenities", "swimmingpool,garage"},
 			expected: []model.Property{dataSet[2]},
+		},
+		{
+			name:     "swimmingpool OR garage",
+			args:     []string{"--ammenities", "swimmingpool|garage"},
+			expected: []model.Property{dataSet[0], dataSet[1], dataSet[2]},
 		},
 	}
 

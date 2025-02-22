@@ -41,7 +41,7 @@ func CsvToProperty(csvLine string) (*model.Property, error) {
 
 	return &model.Property{
 		StringRepresentation: csvLine,
-		Name:                 sp[0],
+		Address:              sp[0],
 		Price:                float32(price),
 		SquareFootage:        int(squareFootage),
 		Rooms:                int(rooms),

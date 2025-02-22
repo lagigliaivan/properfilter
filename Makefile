@@ -3,8 +3,8 @@ test:
 testsum:
 		gotestsum ./...
 testcov:
-		go test -cover ./...
-
+		go test -coverprofile=coverage.out ./...
+		go tool cover -func=coverage.out
 viewtestcov:
 		go test -coverprofile=coverage.out ./...
 		go tool cover -html=coverage.out
@@ -12,4 +12,11 @@ viewtestcov:
 run: build test testcov
 		./properfilter --help
 build:
-		go build -o properfilter ./cmd/main.go
+		go get github.com/fatih/color > /dev/null
+		go build -o properfilter ./cmd/main.go >/dev/null
+
+clean:
+	rm coverage.out
+
+help: build
+	./properfilter --help

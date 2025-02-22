@@ -8,23 +8,23 @@ import (
 )
 
 func TestCsvToProperties(t *testing.T) {
-	csvLine := "6217 S Greenwood Ave,10000.30,80,2,1,foo,garage/grill/swimmingpool,low,33.20,-63.430154"
+	csvLine := "1001 W Elm St,12000.50,75,2,1,Cozy home,garage/grill,medium,-33.513270,62.930154"
 
 	property, err := command.CsvToProperty(csvLine)
 	if err != nil {
 		t.Fatalf("Error: %s", err)
 	}
 
-	assert.Equal(t, "6217 S Greenwood Ave", property.Name)
-	assert.Equal(t, float32(10000.30), property.Price)
-	assert.Equal(t, 80, property.SquareFootage)
+	assert.Equal(t, "1001 W Elm St", property.Address)
+	assert.Equal(t, float32(12000.50), property.Price)
+	assert.Equal(t, 75, property.SquareFootage)
 	assert.Equal(t, 2, property.Rooms)
 	assert.Equal(t, 1, property.Bathrooms)
-	assert.Equal(t, "foo", property.Description)
-	assert.Equal(t, []string{"garage", "grill", "swimmingpool"}, property.Ammenities)
-	assert.Equal(t, "low", property.Lighting)
-	assert.Equal(t, float32(33.20), property.Location.Lat)
-	assert.Equal(t, float32(-63.430154), property.Location.Long)
+	assert.Equal(t, "Cozy home", property.Description)
+	assert.Equal(t, []string{"garage", "grill"}, property.Ammenities)
+	assert.Equal(t, "medium", property.Lighting)
+	assert.Equal(t, float32(-33.513270), property.Location.Lat)
+	assert.Equal(t, float32(62.930154), property.Location.Long)
 }
 
 func TestCsvToPropertiesReturnsErrorWhenMissingField(t *testing.T) {

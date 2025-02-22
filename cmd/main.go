@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/fatih/color"
 	"github.com/properfilter/src/command"
 )
 
@@ -63,7 +64,13 @@ func main() {
 
 func scanInput(run func(string), r io.Reader) error {
 	s := bufio.NewScanner(r)
+	csvHeader := 0
 	for s.Scan() {
+		if csvHeader == 0 {
+			csvHeader++
+			continue
+		}
+
 		run(s.Text())
 	}
 
@@ -93,16 +100,15 @@ func find(value string, args []string) string {
 	return ""
 }
 func help() {
-	fmt.Print(` ______   ______     ______     ______   ______     ______     ______   __     __         ______   ______     ______    
+	color.Green(` ______   ______     ______     ______   ______     ______     ______   __     __         ______   ______     ______    
 /\  == \ /\  == \   /\  __ \   /\  == \ /\  ___\   /\  == \   /\  ___\ /\ \   /\ \       /\__  _\ /\  ___\   /\  == \   
 \ \  _-/ \ \  __<   \ \ \/\ \  \ \  _-/ \ \  __\   \ \  __<   \ \  __\ \ \ \  \ \ \____  \/_/\ \/ \ \  __\   \ \  __<   
  \ \_\    \ \_\ \_\  \ \_____\  \ \_\    \ \_____\  \ \_\ \_\  \ \_\    \ \_\  \ \_____\    \ \_\  \ \_____\  \ \_\ \_\ 
   \/_/     \/_/ /_/   \/_____/   \/_/     \/_____/   \/_/ /_/   \/_/     \/_/   \/_____/     \/_/   \/_____/   \/_/ /_/ 
                                                                                                                         `)
-	fmt.Print("\n\n")
 	fmt.Print("Usage:\n properfilter [-f] <filename> <filter> [operator]:<value>\n\n")
 	fmt.Print("Filters:\n")
-	fmt.Print("--name <value>\n")
+	fmt.Print("--address <value>\n")
 	fmt.Print("--squarefootage  <eq|lt|gt>:<value>\n")
 	fmt.Print("--lighting  <eq|lt|gt>:<low|medium|high>\n")
 	fmt.Print("--price  <eq|lt|gt>:<value>\n")
@@ -113,12 +119,21 @@ func help() {
 	fmt.Print("--distance <lt|gt><distance:lat:long>\n")
 
 	fmt.Print("Examples:\n")
-	fmt.Print("./properfilter --price gt:10000 --price lt:20000< dataset.csv\n")
-	fmt.Print("./properfilter --price gt:10000 --squarefootage gt:1000 < dataset.csv\n")
-	fmt.Print("./properfilter --distance lt:100,-33.013270,-64.430154 < dataset.csv  ")
-	fmt.Print("#properties at less than 100km from lat,long reference point\n")
-	fmt.Print("./properfilter --ammenities fireplace,patio < dataset.csv\n")
-	fmt.Print("./properfilter --price gt:310000 --ammenities fireplace,patio < dataset.csv\n\n")
+	color.Cyan("#properties where price is in the range of [10000 and 14000]\n")
+	fmt.Print("./properfilter --price gt:9999 --price lt:14001< dataset.csv< dataset.csv\n\n")
 
-	fmt.Print("./properfilter --ammenities fireplace,patio -f dataset.csv\n")
+	color.Cyan("#properties where price greater than 10000 and square footage greater than 1000 \n")
+	fmt.Print("./properfilter --price gt:10000 --squarefootage gt:1000 < dataset.csv\n\n")
+
+	color.Cyan("#properties at less than 100km from lat,long reference point\n")
+	fmt.Print("./properfilter --distance lt:100,-33.013270,-64.430154 < dataset.csv\n\n")
+
+	color.Cyan("#properties that have fireplace AND patio\n")
+	fmt.Print("./properfilter --ammenities fireplace,patio < dataset.csv\n\n")
+
+	color.Cyan("#properties that have fireplace OR patio\n")
+	fmt.Print("./properfilter --ammenities \"fireplace|patio\" -f dataset.csv\n\n")
+
+	color.Cyan("#properties that contains the word Spruce in their address\n")
+	fmt.Print("./properfilter --address Spruce -f dataset.csv\n")
 }

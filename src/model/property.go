@@ -8,7 +8,7 @@ import (
 type (
 	Property struct {
 		StringRepresentation string
-		Name                 string
+		Address              string
 		SquareFootage        int
 		Lighting             string //'low' | 'medium' | 'high',
 		Price                float32
@@ -25,10 +25,15 @@ type (
 	}
 
 	Properties []Property
+
+	Filters []PropertyFilter
+
+	PropertyFilter            func(Property) bool
+	PropertyFilterConstructor func(string) (PropertyFilter, error)
 )
 
 func (p *Property) String() string {
-	return fmt.Sprintf(p.StringRepresentation)
+	return p.StringRepresentation
 }
 
 func NewCoordinatesFromString(lat string, long string) (*Coordinates, error) {

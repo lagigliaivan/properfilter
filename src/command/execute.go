@@ -14,11 +14,10 @@ const (
 )
 
 type (
+	Filters []PropertyFilter
 	Command struct {
 		filters Filters
 	}
-
-	Filters []PropertyFilter
 
 	PropertyFilter            func(model.Property) bool
 	PropertyFilterConstructor func(string) (PropertyFilter, error)
@@ -38,10 +37,10 @@ var (
 		"--bathrooms": func(args string, f Filters) (Filters, error) {
 			return parseParam(args, NewBathrooms, f)
 		},
-		"--name": func(args string, f Filters) (Filters, error) {
-			return parseParam(args, NewName, f)
+		"--address": func(args string, f Filters) (Filters, error) {
+			return parseParam(args, NewAddress, f)
 		},
-		"--descrition": func(args string, f Filters) (Filters, error) {
+		"--description": func(args string, f Filters) (Filters, error) {
 			return parseParam(args, NewDescription, f)
 		},
 		"--lighting": func(args string, f Filters) (Filters, error) {
