@@ -5,6 +5,7 @@ This application was coded in Golang 1.22.2, so to run it you need to have golan
 # Golang Installation
 You can dowloand the golang runtime from the follwoing link: https://go.dev/dl/
 
+# Project setup instructions
 Once golang is installed, you can use the following commands to see some examples:
 
 ```
@@ -31,7 +32,7 @@ Use -f parameter to specify a csv file or use < symbol to read from stdin
 #properties where price is in the range of [10000 and 14000]
 ./properfilter --price gt:9999 --price lt:14001 < dataset.csv
 
-#properties where price greater than 10000 and square footage greater than 1000
+#properties where price is greater than 10000 and square footage greater than 1000
 ./properfilter --price gt:10000 --squarefootage gt:1000 < dataset.csv
 
 #properties at less than 100km from lat,long reference point
@@ -46,3 +47,6 @@ Use -f parameter to specify a csv file or use < symbol to read from stdin
 #properties that are described as Compact OR Classic
 ./properfilter --description "Compact|Classic" -f dataset.csv
 ```
+
+## Author
+- [Lagiglia Ivan](https://github.com/lagigliaivan)

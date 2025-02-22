@@ -16,7 +16,7 @@ build:
 		go build -o properfilter ./cmd/main.go >/dev/null
 
 clean:
-	rm coverage.out
+	rm coverage.out properfilter 2> /dev/null
 
 help: build
 	./properfilter --help
