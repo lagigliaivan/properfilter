@@ -111,17 +111,17 @@ func TestSquareFootage(t *testing.T) {
 	}{
 		{
 			name:     "square-footage equals to",
-			args:     []string{"--square-footage", "eq:80"},
+			args:     []string{"--squarefootage", "eq:80"},
 			expected: []model.Property{dataSet[0]},
 		},
 		{
 			name:     "square-footage less than",
-			args:     []string{"--square-footage", "lt:100"},
+			args:     []string{"--squarefootage", "lt:100"},
 			expected: []model.Property{dataSet[0], dataSet[1]},
 		},
 		{
 			name:     "square-footage greater than",
-			args:     []string{"--square-footage", "gt:95"},
+			args:     []string{"--squarefootage", "gt:95"},
 			expected: []model.Property{dataSet[2]},
 		},
 	}

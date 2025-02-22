@@ -39,14 +39,21 @@ Use -f parameter to specify a csv file or use < symbol to read from stdin
 ./properfilter --distance lt:100,-33.013270,-64.430154 < dataset.csv
 
 #properties that have fireplace AND patio
-./properfilter --ammenities fireplace,patio < dataset.csv
+./properfilter --ammenities grill,garage < dataset.csv
 
 #properties that have fireplace OR patio
-./properfilter --ammenities "fireplace|patio" -f dataset.csv
+./properfilter --ammenities "grill|patio" -f dataset.csv
 
 #properties that are described as Compact OR Classic
 ./properfilter --description "Compact|Classic" -f dataset.csv
+
+#properties with medium and high lighting
+./properfilter --lighting gt:low -f dataset.csv
+
+#properties with high lighting
+./properfilter --lighting eq:high -f dataset.csv
 ```
 
 ## Author
 - [Lagiglia Ivan](https://github.com/lagigliaivan)
+- Email (lagigliaivan@gmail.com)

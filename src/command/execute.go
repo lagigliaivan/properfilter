@@ -28,7 +28,7 @@ var (
 		"--price": func(args string, f Filters) (Filters, error) {
 			return parseParam(args, NewPrice, f)
 		},
-		"--square-footage": func(args string, f Filters) (Filters, error) {
+		"--squarefootage": func(args string, f Filters) (Filters, error) {
 			return parseParam(args, NewSquareFootage, f)
 		},
 		"--rooms": func(args string, f Filters) (Filters, error) {
