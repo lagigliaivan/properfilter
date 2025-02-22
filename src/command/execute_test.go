@@ -262,7 +262,7 @@ func TestMixingOperators(t *testing.T) {
 	}{
 		{
 			name: "ammenities must include",
-			args: []string{"--ammenities", "eq:garage", "--price", "gt:100", "--rooms", "lt:5"},
+			args: []string{"--ammenities", "garage", "--price", "gt:100", "--rooms", "lt:5"},
 
 			expected: []model.Property{dataSet[2]},
 		},
@@ -278,7 +278,7 @@ func TestErrorsInParams(t *testing.T) {
 	}{
 		{
 			name: "using a token separator different from :",
-			args: []string{"--ammenities", "eq=garage"},
+			args: []string{"--price", "lt=100"},
 			err:  command.ErrInvalidNumberOfArguments,
 		},
 		{

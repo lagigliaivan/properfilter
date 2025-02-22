@@ -56,7 +56,7 @@ func main() {
 
 		p := cmd.Filter(context.Background(), *property)
 		if p != nil {
-			fmt.Println(p.String())
+			fmt.Printf("%s \n", p.String())
 		}
 	}, r)
 }
@@ -93,11 +93,18 @@ func find(value string, args []string) string {
 	return ""
 }
 func help() {
+	fmt.Print(` ______   ______     ______     ______   ______     ______     ______   __     __         ______   ______     ______    
+/\  == \ /\  == \   /\  __ \   /\  == \ /\  ___\   /\  == \   /\  ___\ /\ \   /\ \       /\__  _\ /\  ___\   /\  == \   
+\ \  _-/ \ \  __<   \ \ \/\ \  \ \  _-/ \ \  __\   \ \  __<   \ \  __\ \ \ \  \ \ \____  \/_/\ \/ \ \  __\   \ \  __<   
+ \ \_\    \ \_\ \_\  \ \_____\  \ \_\    \ \_____\  \ \_\ \_\  \ \_\    \ \_\  \ \_____\    \ \_\  \ \_____\  \ \_\ \_\ 
+  \/_/     \/_/ /_/   \/_____/   \/_/     \/_____/   \/_/ /_/   \/_/     \/_/   \/_____/     \/_/   \/_____/   \/_/ /_/ 
+                                                                                                                        `)
+	fmt.Print("\n\n")
 	fmt.Print("Usage:\n properfilter [-f] <filename> <filter> [operator]:<value>\n\n")
 	fmt.Print("Filters:\n")
 	fmt.Print("--name <value>\n")
 	fmt.Print("--squarefootage  <eq|lt|gt>:<value>\n")
-	fmt.Print("--lighting  <eq|lt|gt>:<low|medium|high?\n")
+	fmt.Print("--lighting  <eq|lt|gt>:<low|medium|high>\n")
 	fmt.Print("--price  <eq|lt|gt>:<value>\n")
 	fmt.Print("--rooms  <eq|lt|gt>:<value>\n")
 	fmt.Print("--bathrooms  <eq|lt|gt>:<value>\n")

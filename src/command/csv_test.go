@@ -8,7 +8,7 @@ import (
 )
 
 func TestCsvToProperties(t *testing.T) {
-	csvLine := "6217 S Greenwood Ave,10000.30,80,2,1,foo,garage/grill/swimmingpool,low"
+	csvLine := "6217 S Greenwood Ave,10000.30,80,2,1,foo,garage/grill/swimmingpool,low,33.20,-63.430154"
 
 	property, err := command.CsvToProperty(csvLine)
 	if err != nil {
@@ -23,6 +23,8 @@ func TestCsvToProperties(t *testing.T) {
 	assert.Equal(t, "foo", property.Description)
 	assert.Equal(t, []string{"garage", "grill", "swimmingpool"}, property.Ammenities)
 	assert.Equal(t, "low", property.Lighting)
+	assert.Equal(t, float32(33.20), property.Location.Lat)
+	assert.Equal(t, float32(-63.430154), property.Location.Long)
 }
 
 func TestCsvToPropertiesReturnsErrorWhenMissingField(t *testing.T) {
