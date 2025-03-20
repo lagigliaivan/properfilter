@@ -1,3 +1,9 @@
+# I did this application as part of a recruiting process.
+Unfortunatelly, even though I sent this before the expected deadline, on week later they told me that
+another candidate was almost at the end of the process, so they don't even review my deliverable.
+
+I hope this may help others to have some help on some similar exercise. 
+
 # The properfilter command
 Command Line to filter a large set of real estate properties based on their particular attributes.
 This application was coded in Golang 1.22.2, so to run it you need to have golang runtime installed.
